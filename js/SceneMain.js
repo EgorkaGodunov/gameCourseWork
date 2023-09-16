@@ -1,4 +1,4 @@
-import { dialogs } from "./dialogs.js";
+import { dialog1 } from "./dialogs.js";
 
 export class SceneMain extends Phaser.Scene {
     constructor() {
@@ -18,7 +18,7 @@ export class SceneMain extends Phaser.Scene {
             100,
             100,
             "teacher",
-            dialogs[0]
+            dialog1
         )
         
         this.buttonClicked = false;
@@ -28,10 +28,9 @@ export class SceneMain extends Phaser.Scene {
         this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         this.keyTab = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TAB);
 
-
         this.input.keyboard.on('keyup-TAB', () => {
             if (this.buttonClicked) {
-                this.npc.talk()
+                this.npc.showDialogue(0)
             }
             this.buttonClicked = false
         },this);
@@ -56,4 +55,5 @@ export class SceneMain extends Phaser.Scene {
         }
       
     }
+    
   }
