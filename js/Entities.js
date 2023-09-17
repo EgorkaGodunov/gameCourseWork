@@ -19,40 +19,43 @@ class People extends Entity {
             fontFamily: 'Arial',
             fontSize: '16px',
             color: '#000000',
-            wordWrap: {width: 580}
+            wordWrap: {width: 560, height: 50}
         }
 
-    }
 
+    }
+    cleatTab(){
+        this.buffer.forEach(function(element){
+            element.destroy()
+        })
+    }
     showDialogue(currentIndex) {
-        this.step = 20
-        this.buffer.push(this.scene.add.sprite(100,400,"tab").setOrigin(0,0))
-        this.question = this.scene.add.text(150,420,this.dialog[currentIndex]['text'], this.textOptions)
+        this.scene.nowTalk = true
+        this.cleatTab()
+        this.step = 40
+        this.buffer.push(this.scene.add.sprite(this.scene.cameras.main.scrollX+100,this.scene.cameras.main.scrollY+400,"tab").setOrigin(0,0))
+        this.question = this.scene.add.text(this.scene.cameras.main.scrollX+150,this.scene.cameras.main.scrollY+420,this.dialog[currentIndex]['text'], this.textOptions)
         this.buffer.push(this.question)
-       
         for (var i = 0; i < this.dialog[currentIndex].options.length; i++) {
             var option = this.dialog[currentIndex].options[i];
-            this.answer = this.scene.add.text(200,this.question.y + this.question.height +this.step ,option["text"], this.textOptions)
+            this.answer = this.scene.add.text(this.scene.cameras.main.scrollX+150,this.question.y + this.question.height +this.step ,option["text"], this.textOptions)
             this.answer.setInteractive()
             this.buffer.push(this.answer)
 
             this.answer.on('pointerdown', (index => () => {
                 this.handleOptionClick(index)
             })(option['next']), this)
-            this.step += 20
+            this.step += 40
         }
     }
     handleOptionClick(option){
         var nextDialogueIndex = option;
         if (nextDialogueIndex === -1) {
-            // Скройте диалоговое окно или верните управление игроку
-            this.buffer.forEach(function(element){
-                element.destroy()
-            })
+            this.cleatTab()
+            this.scene.nowTalk = false
+
         } else {
-            this.buffer.forEach(function(element){
-                element.destroy()
-            })
+            this.cleatTab()
             this.showDialogue(nextDialogueIndex);
         }
     }
@@ -77,9 +80,14 @@ class Player extends Entity {
     moveRight() {
         this.body.velocity.x = this.getData("speed");
       }
+    stop(){
+        this.body.velocity.x = 0
+        this.body.velocity.y = 0
+
+    }
     update() {
         this.body.setVelocity(0, 0);
-        this.x = Phaser.Math.Clamp(this.x, 0, this.scene.game.config.width);
-        this.y = Phaser.Math.Clamp(this.y, 0, this.scene.game.config.height);
+        this.x = Phaser.Math.Clamp(this.x, 0, this.scene.game.config.width * 2);
+        this.y = Phaser.Math.Clamp(this.y, 0, this.scene.game.config.height * 2);
     }
 }

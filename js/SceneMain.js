@@ -8,6 +8,7 @@ export class SceneMain extends Phaser.Scene {
         this.tab = this.load.image("tab", "content/tab.png")
     }
     create() {
+        this.nowTalk = false
         this.player = new Player(
             this, 
             this.game.config.width * 0.5,
@@ -19,14 +20,22 @@ export class SceneMain extends Phaser.Scene {
             100,
             "teacher",
             dialog1
+
         )
+        this.physics.world.setBounds(0, 0, 1600, 1200); // Здесь 800x600 - размер фона
+
+        this.camera = this.cameras.main
+        this.camera.setBounds(0, 0, 1600, 1200)
+        this.camera.startFollow(this.player)
+
         
-        this.buttonClicked = false;
-        this.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
-        this.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
-        this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
-        this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-        this.keyTab = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TAB);
+
+        this.buttonClicked = false
+        this.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
+        this.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S)
+        this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
+        this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
+        this.keyTab = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TAB)
 
         this.input.keyboard.on('keyup-TAB', () => {
             if (this.buttonClicked) {
@@ -39,8 +48,10 @@ export class SceneMain extends Phaser.Scene {
         },this);
     }
     update() {
-        this.player.update();
+      if(!this.nowTalk){
 
+        this.player.update();
+        
         if (this.keyW.isDown) {
           this.player.moveUp();
         }
@@ -53,6 +64,10 @@ export class SceneMain extends Phaser.Scene {
         else if (this.keyD.isDown) {
           this.player.moveRight();
         }
+      }else{
+        this.player.stop()
+
+      }
       
     }
     
